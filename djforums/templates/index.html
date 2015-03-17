@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+<html>
+
+{% block title%}
+	<title>Djforum › Home</title>
+{%endblock%}
+
+{% block content0%}
+<!--社区运行状况-->
+<div class="sep20"></div>
+<div class="box">
+    <div class="cell"><span class="fade">社区运行状况</span></div>
+    <div class="cell" style="hight:400px;">
+        <table cellpadding="5" cellspacing="0" border="0" width="100%">
+            <tbody><tr>
+                <td width="50" align="right"><span class="gray">会员: </span></td>
+                <td width="auto" align="left"><strong>{{top24}}</strong></td>
+            </tr>
+            <tr>
+                <td width="50" align="right"><span class="gray">主题: </span></td>
+                <td width="auto" align="left"><strong>{{top25}}</strong></td>
+            </tr>
+            <tr>
+                <td width="50" align="right"><span class="gray">回复: </span></td>
+                <td width="auto" align="left"><strong>{{top26}}</strong></td>
+            </tr>
+        </tbody></table>
+
+    </div>
+</div>
+
+
+<!--社区运行状况结束-->
+{%endblock%}
+
+{% block content1%}
+<!--首页背景-->      
+<style>
+body{
+
+	background-image: url("/static/img/bj.jpg");
+}
+</style>
+<!--首页背景结束-->
+
+<!--添加分类-->
+<div class="sep20"></div>
+<div class="box"style="width:70%">
+    <div class="cell"><div class="fr">
+	{% if user.is_superuser %}
+	<a id="addcate">添加分类</a>
+	{% endif %}
+	</div><span><strong>Djforum</strong> / 节点导航</span></div>
+    <div class="inner"><table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td align="right" width="60"><span>分类</span></td><td style="line-height: 200%; padding-left: 10px;" id="cate1">
+
+{%for a in cates%}
+<a href='/cate/{{a.id}}' style='font-size:14px;'>{{a.name}}</a>&nbsp;&nbsp;
+{%endfor%}
+</div>
+</td></tr></tbody></table></div>
+
+</div>
+
+<div class="sep20"></div>
+<!--添加分类结束-->
+
+<!--主题-->
+<div class="box"style="width:70%">
+
+{%for t in top20%}
+<div class="cell item" style=""><div style="position: absolute; margin: -10px -10px 0px 650px;"></div>
+    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tbody><tr>
+            
+            <td width="48" valign="top" align="center"><a href="/topic/{{t.id}}"><img src="{{MEDIA_URL}}{{t.p.get_photo}}" style="width: 48px;height: 48px;" class="avatar" border="0" align="default"></a></td>
+            <td width="10"></td>
+            
+            <td width="auto" valign="middle"><span class="item_title"><a href="/topic/{{t.id}}">({{t.category.name}}){{t.subject}}</a></span>
+            <div class="sep5"></div>
+            <span class="small"><div class="votes"></div>&nbsp;•&nbsp; <strong><a href="/useradmin">{{t.author.username}}</a></strong> &nbsp;•&nbsp; {{t.created|timesince}} &nbsp;•&nbsp; 最后回复来自 <strong>
+			{% for r in top23 %}
+			<a href="/useradmin">{{r.author}}</a>
+			{% endfor %}
+			</strong></span>
+            </td>
+            <td width="50" align="right" valign="middle">
+                
+                <a href="/topic/{{t.id}}" class="count_livid">{{t.num_views}}</a>
+                
+            </td>
+        </tr>
+    </tbody></table>
+</div>
+{%endfor%}
+
+
+</div>
+                        
+        </div>
+
+        <div class="c"></div>
+        <div class="sep20"></div>
+    	</div>
+<!--主题结束-->
+
+{%endblock%}
+
+{% block content2%}
+<!--box-->
+
+<!--添加分类-->
+
+<div class="backgroundbox" style="display:none">
+</div>
+
+<div class="popbox" style="display:none; text-align:right;">
+	<a class="close" id="close">X</a>
+	<div class="control">
+		<input id="newcate" name="username" type="text" value=""placeholder="请输入分类"></input>
+		<p class"help help-block"></p>
+		<button id="sendcate" class="btn btn-primary">提交</button>
+	</div>
+</div>
+
+<!--添加分类结束-->
+
+<!--box结束-->
+{%endblock%}
+
+{% block content3%}
+<script>
+$(document).ready(function(){
+	$("#addcate").click(function(){
+		$(".backgroundbox").show();
+		$(".popbox").show();
+	});
+	$("#sendcate").click(function(){
+		var newcate = $("#newcate").val();
+		console.log(newcate);
+		$(".backgroundbox").hide();
+		$(".popbox").hide();
+		
+		$.ajax({
+				type:'POST',
+				url:'/addcate',
+				dataType:'json',
+				data:{name: newcate,csrfmiddlewaretoken: '{{csrf_token}}',}
+				})
+				.done(function(msg){
+					//alert("分类创建:" + msg.code);
+					if(msg.code == "ok")
+					{
+						$("#cate1").append('<a href="/cate/'+msg.id+'" style="font-size:14px;">'+newcate+'</a>&nbsp;&nbsp;')
+					}
+				});
+
+	});
+	$("#close").click(function(){
+		$(".backgroundbox").hide();
+		$(".popbox").hide();
+	});
+});
+
+</script>
+{%endblock%}
+</html>

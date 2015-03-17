@@ -1,0 +1,286 @@
+<html>
+<!--头-->  
+<head>
+	<meta charset="UTF-8"> 
+	{% block title%}{%endblock%}
+
+	<link rel="stylesheet" href="/static/css/main.css" type="text/css" />
+	<link rel="stylesheet" href="/static/css/demos.css" type="text/css" />
+	<link rel="stylesheet" href="/static/css/jquery.Jcrop.css" type="text/css" />
+
+	<script src="/static/js/jquery.js"></script>
+	<script src="/static/js/jquery.min.js"></script>
+	<script src="/static/js/jquery.Jcrop.js"></script>
+
+    	<link rel="stylesheet" type="text/css" href="/static/css/uliweb.css">
+    	<link rel="stylesheet" type="text/css" href="/static/css/shared.css">
+   	 <link rel="stylesheet" type="text/css" href="/static/css/djforums.css">
+
+	<!--tinymce-->
+	<script src="http://tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+	<!--endtinymce-->
+</head>
+
+<body>
+<div id="Top"style="margin:0 auto; width:100%; height:38px; background-size: 44px 44px; background-image: url("/static/img/top_light.png");">
+
+        <div class="content">
+            <div style="padding-top: 5px;">
+            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tbody><tr>
+                    <td width="120" align="left"><a href="/" style=" padding-top: 8px; color:#000000; font-weight:bold; font-size: 25px;">Zhuhy</a></td>
+                    <td width="auto" align="left">
+
+                    <input style="height:24px; width:200px; color:#0099FF;" type="text" maxlength="40" name="q" id="q" value=""placeholder="请输入关键字 ">
+                    </td>
+                    <td width="520" align="right" style="padding-top: 2px;font-size: 15px;">
+						<a href="/" class="top">首页</a>&nbsp;&nbsp;&nbsp;
+						{% if user.is_authenticated %}
+						<a>{{user.username}}</a>&nbsp;&nbsp;&nbsp;
+						{% if user.is_superuser %}
+						<a href="/upload">随机头像</a>&nbsp;&nbsp;&nbsp;
+						{% else %}
+						<a href="/useradmin">设置</a>&nbsp;&nbsp;&nbsp;
+						{% endif %}
+  						<a href="/accounts/logout/?next=/">注销</a>
+						{% else %}
+  						<a  id="reg" class="top">注册</a>&nbsp;&nbsp;&nbsp;
+						<a  id="sig" class="top">登录</a>
+						{% endif %}
+
+					</td>
+                </tr>
+            </tbody></table>
+            </div>
+        </div>
+</div>
+
+    <div id="Wrapper">
+        <div class="content">
+            
+            <div id="Leftbar"></div>
+            <div id="Rightbar">
+                <div class="sep20"></div>
+                
+                    
+{% if user.is_authenticated %}
+
+                    <div class="box">
+                        <div class="cell">
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tbody><tr>
+									{% if user.is_superuser %}
+                                    <td width="10" valign="top"></td>
+                                    <td width="auto" align="left"><span class="bigger">{{user.username}}</span></td>
+									{% else %}
+                                    <td width="48" valign="top"><a href="/useradmin"><img src="{{MEDIA_URL}}{{top21.get_photo}}" class="avatar" border="0" align="default" style="width: 48px;height: 48px;"></a></td>
+									
+                                    <td width="10" valign="top"></td>
+									{% if top21.nick != None %}
+                                    <td width="auto" align="left"><span class="bigger"><a href="/useradmin">{{top21.nick}}</a></span></td>
+									{% else %}
+                                    <td width="auto" align="left"><span class="bigger"><a href="/useradmin">{{user.username}}</a></span></td>
+									{% endif %}
+									{% endif %}
+                                </tr>
+                            </tbody></table>
+                            <div class="sep10"></div>
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tbody><tr>
+                                    <td width="33%" align="center"><a href="" class="dark" style="display: block;"><span class="bigger">{{top27}}</span><div class="sep3"></div><span class="fade"> 主题数</span></a></td>
+                                    <td width="34%" style="border-left: 1px solid rgba(100, 100, 100, 0.4); border-right: 1px solid rgba(100, 100, 100, 0.4);" align="center"><a href="" class="dark" style="display: block;"><span class="bigger">{{top28}}</span><div class="sep3"></div><span class="fade">回复数</span></a></td>
+                                    <td width="33%" align="center"><a href="" class="dark" style="display: block;"><span class="bigger">0</span><div class="sep3"></div><span class="fade">特别关注</span></a></td>
+                                </tr>
+                            </tbody></table>
+                        </div>
+                        
+                        <div class="inner"><div class="fr" id="money"></div><a href="" class="fade">0 条未读提醒</a></div>
+                        
+                    </div>
+
+{% else %}
+
+<div class="box">
+                        <div class="cell">
+
+
+                            <span class="fade">Zhuhy 是一个关于分享和探索的地方</span>
+                        </div>
+                        <div class="inner">
+                            <div class="sep5"></div>
+                            <div align="center"><a id="reg1" class="super normal button">现在注册</a>
+                            <div class="sep5"></div>
+                            <div class="sep10"></div>
+                            已注册用户请 &nbsp;<a id="sig1">登录</a></div>
+                        </div>
+                    </div>
+{% endif %}
+
+<div class="sep20"></div>
+<div class="box" id="TopicsHot">
+    <div class="cell"><span class="fade">热议主题</span></div>
+{%for e in top22%}
+    <div class="cell from_37640 hot_t_123949">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tbody><tr>
+            <td width="24" valign="middle" align="center">
+                <a href="/topic/{{e.id}}"><img src="{{MEDIA_URL}}{{e.p.get_photo}}" class="avatar" border="0" align="default" style="width: 24px;height: 24px;"></a>
+            </td>
+            <td width="10"></td>
+            <td width="auto" valign="middle">
+                <span class="item_hot_topic_title">
+
+                <a href="/topic/{{e.id}}">{{e.subject}}</a>
+
+                </span>
+            </td>
+        </tr>
+    </tbody></table>
+    </div>
+{%endfor%}
+
+</div>
+{% block content0%}{%endblock%}   
+            </div>
+{% block content1%}{%endblock%}
+
+{% block content2%}{%endblock%}
+<!--登录-->
+
+<div class="backgroundbox1" style="display:none">
+</div>
+
+<div class="popbox1" style="display:none; text-align:right;">
+	<a class="close" id="close1">X</a>
+	<div class="control">
+		<input id="newcate1" name="username" type="text" value=""placeholder="用户名"></input>
+		<input id="newcate2" name="password" type="password" value=""placeholder="密码"></input>
+		<p class"help help-block"></p>
+		<button id="sendcate1" class="btn btn-primary">登录</button>
+	</div>
+</div>
+
+<!--登录结束-->
+
+<!--注册-->
+
+<div class="backgroundbox2" style="display:none">
+</div>
+
+<div class="popbox2" style="display:none">
+	<a class="close" id="close2">X</a>
+	<div class="control">
+    	<input id="newcate3" name="username" type="text" value=""placeholder="请输入用户名"></input>
+		<input id="newcate4" name="password1" type="password" value=""placeholder="请输入密码"></input>
+		<input id="newcate5" name="password2" type="password" value=""placeholder="请再次输入密码"></input>
+		<p class"help help-block"></p>
+		<button id="sendcate2" class="btn btn-primary" style="margin-right:-149px;">注册</button>
+	</div>
+</div>
+</div>
+
+<!--注册结束-->
+{% block content3%}{%endblock%}
+
+<script>
+$(document).ready(function(){
+	$("#sig").add("#sig1").click(function(){
+		$(".backgroundbox1").show();
+		$(".popbox1").show();
+	});
+	$("#sendcate1").click(function(){
+		var newcate1 = $("#newcate1").val();
+		var newcate2 = $("#newcate2").val();
+		console.log(newcate1);
+		console.log(newcate2);
+		$(".backgroundbox1").hide();
+		$(".popbox1").hide();
+		
+		$.ajax({
+				type:'POST',
+				url:'/accounts/login/',
+				dataType:'html',
+				data:{username: newcate1, password: newcate2, csrfmiddlewaretoken: '{{csrf_token}}',}
+				})
+				.done(function(msg){
+					location.reload();
+					
+				})
+				.error(function(msg){
+					location.reload();
+					
+				});
+
+	});
+	$("#close1").click(function(){
+		$(".backgroundbox1").hide();
+		$(".popbox1").hide();
+	});
+});
+
+$(document).ready(function(){
+	$("#reg").add("#reg1").click(function(){
+		$(".backgroundbox2").show();
+		$(".popbox2").show();
+	});
+	$("#sendcate2").click(function(){
+		var newcate3 = $("#newcate3").val();
+		var newcate4 = $("#newcate4").val();
+		var newcate5 = $("#newcate5").val();
+		console.log(newcate3);
+		console.log(newcate4);
+		console.log(newcate5);
+		$(".backgroundbox2").hide();
+		$(".popbox2").hide();
+		
+		$.ajax({
+				type:'POST',
+				url:'/accounts/register/',
+				dataType:'html',
+				data:{username: newcate3, password1: newcate4, password2: newcate5, csrfmiddlewaretoken: '{{csrf_token}}',}
+				})
+
+				.done(function(msg){
+
+					window.location.href="/useradmin";
+					window.location.href="/"
+					//location.reload('/useramdin');
+					
+				})
+				.error(function(msg){
+
+					window.location.href="/useradmin";
+					window.location.href="/"
+					//location.reload('/useramdin');
+					
+				});
+
+	});
+	$("#close2").click(function(){
+		$(".backgroundbox2").hide();
+		$(".popbox2").hide();
+	});
+});
+</script>
+
+</body>
+
+<!--结尾结束-->
+<div id="Bottom">
+        <div class="content">
+            <div class="inner">
+                <div class="sep10"></div>
+                    <div class="fr">
+                        <a href="/" target="_self"><img src="/static/img/do.png" width="64" border="0" alt="DigitalOcean"></a>
+                    </div>
+                    <strong><a href="/" class="dark" target="_self">关于</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="/" class="dark" target="_self">FAQ</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="/" class="dark" target="_self">愿景</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="/" class="dark" target="_self">查询</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="/" class="dark" target="_self">空间</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="/" class="dark" target="_self">投放</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="/" class="dark" target="_self">博客</a> &nbsp; <span class="snow">·</span> &nbsp; <a href="/" class="dark" target="_self">首页</a> &nbsp; <span class="snow">·</span> &nbsp; 6 人在线</strong> &nbsp; <span class="fade">最高记录 60</span> &nbsp; <span class="snow">·</span> &nbsp; <a href="/"><img src="/static/img/lang_zhcn_32.png" align="absmiddle" border="0" width="20" alt=""></a>
+                    <div class="sep20"></div>
+                    Lovingly made by <b>Zhuhy</b>
+                    <div class="sep20"></div>
+                    <span class="small fade">♥ Think you very much !<br>♥ Do have faith in what you're doing.</span>
+                <div class="sep10"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--结尾结束-->

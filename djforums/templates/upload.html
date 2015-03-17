@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+<html>
+
+{% block title%}
+	<title>Djforum › Home</title>
+{%endblock%}
+
+
+{% block content1%}
+<!--随机头像-->
+
+<div class="sep20"></div>
+<div class="box"style="width:70%; padding-top:32px;">
+
+       	{%for x in p%}
+		<a id="delete_picture" title="点击删除头像"><img src="{{MEDIA_URL}}{{x.img}}"></a>
+		{%endfor%}
+		<div class="left_" align="left" style="padding-top:32px; padding-left:32px">
+		<form action="/uploadphoto" method="POST" enctype="multipart/form-data">
+		{%csrf_token%}
+		<input id="field_image" name="img" type="file" ></p>
+		<input id="field_image" type="hidden" name="desc" value="avatar">
+		<button class="super normal button">上传</button>
+		</form>
+		</div>
+</div>
+
+        </div>
+        <div class="c"></div>
+        <div class="sep20"></div>
+    	</div>
+<!--随机头像结束-->
+{% endblock %}
+</html>

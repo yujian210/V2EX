@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+<html>
+
+{% block title%}
+    <title>Djforum › {{cate.name}}</title>
+{%endblock%}
+
+{% block content1%}
+<!--弹出框编辑模块-->
+
+<script>
+function loadtinymce()
+{
+        tinymce.init({
+    selector: "textarea",
+    theme: "modern",
+    plugins: [
+        "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+        "searchreplace wordcount visualblocks visualchars code fullscreen",
+        "insertdatetime media nonbreaking save table contextmenu directionality",
+        "emoticons template paste textcolor"
+    ],
+    toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+    toolbar2: "print preview media | forecolor backcolor emoticons",
+        });
+}
+$(document).ready(function(){
+        loadtinymce();
+});
+</script>
+
+<!--弹出框编辑模块结束-->
+
+<!--创建新主题-->
+
+<div class="content">
+<div class="sep20"></div>
+	<div class="box" style="width:70%">
+	
+
+<div class="header"><div style="float: left; display: inline-block; margin-right: 10px; margin-bottom: 10px;"><img src="/static/img/300_large.png" border="0" align="default" width="auto"></div><div class="fr f12"> <span class="snow"></span> </div><a href="/">Djforum</a> <span class="chevron">&nbsp;›&nbsp;</span><a>{{cate.name}}</a>
+    <div class="sep10"></div>
+    <span class="f12 gray">While code monkeys are not eating bananas, they're coding.</span>
+    
+    
+    <div class="sep10"></div>
+	{% if user.is_authenticated %}
+	{% if user.is_superuser %}
+
+	{% else %}
+    <a class="btn" id="newtopic">创建新主题</a>
+    {% endif %}
+    {% endif %}
+    </div>
+</div>
+
+<!--创建新主题结束-->
+
+<!--主题-->
+
+<div class="sep20"></div>
+<div class="box" style="width:70%">
+
+{%for t in topics%}
+
+<div class="cell item" style=""><div style="position: absolute; margin: -10px -10px 0px 650px;"></div>
+    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tbody><tr>
+            
+            <td width="48" valign="top" align="center"><a href="/member/codeplay"><img src="{{MEDIA_URL}}{{t.p.get_photo}}" style="width: 48px;height: 48px;" class="avatar" border="0" align="default"></a></td>
+            <td width="10"></td>
+            
+            <td width="auto" valign="middle"><span class="item_title"><a href="/topic/{{t.id}}">{{t.subject}}</a></span>
+            <div class="sep5"></div>
+            <span class="small"><div class="votes"></div>&nbsp;•&nbsp; <strong><a href="/member/codeplay">{{t.author.username}}</a></strong> &nbsp;•&nbsp; {{t.created}} &nbsp;•&nbsp; 最后回复来自 <strong>
+			{% for r in top23 %}
+			<a href="/useradmin">{{r.author}}</a>
+			{% endfor %}
+			</strong></span>
+            </td>
+            <td width="50" align="right" valign="middle">
+                
+                <a href="/t/120501#reply1" class="count_livid">{{t.num_views}}</a>
+                
+            </td>
+        </tr>
+    </tbody></table>
+</div>
+{%endfor%}
+	
+</div>
+</div>
+</div>
+        <div class="c"></div>
+<div class="sep20"></div>
+</div>
+<!--主题结束-->
+{%endblock%}
+
+{% block content2%}
+<!--box-->
+
+<div class="backgroundbox" style="display:none;">
+</div>
+
+<div class="popbox" style="display:none;width:600;height:500;padding:30px 10px 10px 10px;">
+	<a class="close" id="close">X</a>
+
+		<form action="/topic/{{cate.id}}/addtopic" method="POST">
+		{%csrf_token%}
+		<input style="width:600" type="text" class="form-control" name="subject" value=""placeholder="请输入主题">
+		<textarea style="height:250px;" name="content"></textarea>
+		<button class="btn btn-primary">发表</button>
+		</form>
+	
+</div>
+
+<!--box结束-->
+{%endblock%}
+
+{% block content3%}
+<script>
+$(document).ready(function(){
+	$("#newtopic").click(function(){
+		$(".backgroundbox").show();
+		$(".popbox").show();
+	});
+
+	$("#close").click(function(){
+		$(".backgroundbox").hide();
+		$(".popbox").hide();
+	});
+});
+</script>
+{%endblock%}
+</html>
